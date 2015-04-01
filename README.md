@@ -17,6 +17,10 @@ Create a new Rails app:
 
 Please replace APP_NAME with your new Rails app name.
 
+List out all available recipes:
+
+    $ rails_baseline list
+
 ## Version
 
 1. 0.0.5 - Executable file
