@@ -18,8 +18,6 @@ module RailsBaseline
       def yellow; "\033[33m" end
 
       def run_template(name)
-        puts
-        puts
         puts "#{bold}Generating and Running Template..."
         puts
         template_path = File.join( File.dirname(__FILE__), 'template.rb' )

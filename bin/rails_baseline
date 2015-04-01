@@ -1,8 +1,12 @@
 #!/usr/bin/env ruby
 
-lib = File.expand_path('../../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+lib = File.expand_path(File.dirname(__FILE__) + '/../lib')
+$LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
 
+require 'rails_baseline'
 require 'rails_baseline/command'
 
-RailsBaseline::Command.start
+puts "Initializing Rails Baseline app..."
+puts "Arguments: #{ARGV}"
+
+RailsBaseline::Command.start ARGV
