@@ -25,3 +25,4 @@ List out all available recipes:
 
 1. 0.0.5 - Executable file
 2. 0.1.0 - Rearrange wizard orders and order listing
+3. 0.1.1 - Added jQuery Validation, CanCanCan and Google Tag Manager
