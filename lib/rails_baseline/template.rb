@@ -49,6 +49,93 @@ def after_everything(&block); @after_everything_blocks << [@current_recipe, bloc
 @before_configs = {}
 def before_config(&block); @before_configs[@current_recipe] = block; end
 
+# >-----------------------[ Deflator and Autoloads ]--------------------------<
+@current_recipe = "deflator"
+
+insertion_text = <<-TEXT
+\n
+    config.middleware.use Rack::Deflater
+TEXT
+
+inject_into_file "config/application.rb", insertion_text, :after => "# config.i18n.default_locale = :de"
+
+# >--------------------------------[ Email Settings ]---------------------------------<
+@current_recipe = "smtp"
+
+email_configuration_text = <<-TEXT
+\n
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :enable_starttls_auto => true,
+    :address              => "smtp.mandrillapp.com",
+    :port                 => 587,
+    :domain               => 'YOUR_DOMAIN',
+    :user_name            => "USERNAME",
+    :password             => "PASSWORD",
+    :authentication       => :plain
+  }
+TEXT
+
+after_bundler do
+  inject_into_file 'config/environments/development.rb', email_configuration_text, :after => "config.assets.debug = true"
+  inject_into_file 'config/environments/production.rb', email_configuration_text, :after => "config.active_support.deprecation = :notify"
+  say_wizard "------------------------ EMAIL SETTINGS --------------------------"
+  say_wizard "| Please change your email settings in development.rb            |"
+  say_wizard "| and production.rb                                              |"
+  say_wizard "------------------------------------------------------------------"
+end
+
+# >--------------------------------[ Rails Config ]---------------------------------<
+
+@current_recipe = "rails_config"
+@before_configs["rails_config"].call if @before_configs["rails_config"]
+say_recipe 'Rails Config'
+
+gem 'rails_config', '0.5.0.beta1'
+
+after_bundler do
+  generate 'rails_config:install'
+end
+
+# >--------------------------------[ RSpec ]---------------------------------<
+@current_recipe = "rspec"
+@before_configs["rspec"].call if @before_configs["rspec"]
+say_recipe 'RSpec'
+
+gem 'rails_apps_testing', :group => :development
+gem 'rspec-rails', :group => [:development, :test]
+gem 'spring-commands-rspec', :group => :development
+gem 'factory_girl_rails', :group => [:development, :test]
+gem 'faker', :group => [:development, :test]
+gem 'capybara', :group => :test
+gem 'database_cleaner', :group => :test
+gem 'launchy', :group => :test
+gem 'selenium-webdriver', :group => :test
+
+rspec_text = <<-TEXT
+\n
+    config.generators do |g|
+      g.test_framework :rspec,
+      fixtures: true,
+      view_specs: false,
+      helper_specs: false,
+      routing_specs: false,
+      controller_specs: true,
+      request_specs: false
+      g.fixture_replacement :factory_girl, dir: "spec/factories"
+    end
+TEXT
+
+after_bundler do
+  run 'bundle binstubs rspec-core'
+  generate 'rspec:install'
+  remove_dir 'test'
+
+  inject_into_file "config/application.rb", rspec_text, :after => "# config.i18n.default_locale = :de"
+end
+
 # >---------------------------[ ActiveRecord/Mongoid ]----------------------------<
 
 @current_recipe = "database"
@@ -117,33 +204,20 @@ say_recipe 'Active Admin'
 
 gem 'activeadmin', github: 'activeadmin'
 
-if yes_wizard?("Skip Users?")
-  after_bundler do
-    generate "active_admin:install --skip-users" # skips Devise install
-  end
-else
-  model_name = ask_wizard("Enter the model name of AA. Leave it blank to default as AdminUser.")
+if yes_wizard?("Active Admin with Users?(no to skip users)")
+  model_name = ask_wizard("Enter the model name of ActiveAdmin. Leave it blank to default as AdminUser.")
   after_bundler do
     if model_name.present?
-      generate "active_admin:install #{model_name}"         # creates / edits the class for use with Devise
+      generate "active_admin:install #{model_name}"
     else
-      generate "active_admin:install"              # creates the AdminUser class
+      generate "active_admin:install"
     end
   end
+else
+  after_bundler do
+    generate "active_admin:install --skip-users"
+  end
 end
-
-# >-------------------------------[ Setup SASS ]----------------------------------<
-
-@current_recipe = "sass"
-@before_configs["sass"].call if @before_configs["sass"]
-say_recipe 'SASS'
-
-after_bundler do
-  copy_file 'app/assets/stylesheets/application.css', 'app/assets/stylesheets/application.css.scss'
-  remove_file 'app/assets/stylesheets/application.css'
-end
-
-@current_recipe = nil
 
 # >---------------------------[ Application Views ]------------------------------<
 @current_recipe = "application"
@@ -197,6 +271,19 @@ after_bundler do
   say_wizard "---------------------------------------------------------------------"
 end
 
+# >-------------------------------[ Setup SASS ]----------------------------------<
+
+@current_recipe = "sass"
+@before_configs["sass"].call if @before_configs["sass"]
+say_recipe 'SASS'
+
+after_bundler do
+  copy_file 'app/assets/stylesheets/application.css', 'app/assets/stylesheets/application.css.scss'
+  remove_file 'app/assets/stylesheets/application.css'
+end
+
+@current_recipe = nil
+
 # >--------------------------------[ Bootstrap ]---------------------------------<
 
 @current_recipe = "bootstrap"
@@ -241,93 +328,6 @@ if yes_wizard?("Install and configure Bootstrap?")
     end
     create_file 'app/views/shared/_messages.html.erb', flash_message
   end
-end
-
-# >--------------------------------[ Rails Config ]---------------------------------<
-
-@current_recipe = "rails_config"
-@before_configs["rails_config"].call if @before_configs["rails_config"]
-say_recipe 'Rails Config'
-
-gem 'rails_config', '0.5.0.beta1'
-
-after_bundler do
-  generate 'rails_config:install'
-end
-
-# >--------------------------------[ RSpec ]---------------------------------<
-@current_recipe = "rspec"
-@before_configs["rspec"].call if @before_configs["rspec"]
-say_recipe 'RSpec'
-
-gem 'rails_apps_testing', :group => :development
-gem 'rspec-rails', :group => [:development, :test]
-gem 'spring-commands-rspec', :group => :development
-gem 'factory_girl_rails', :group => [:development, :test]
-gem 'faker', :group => [:development, :test]
-gem 'capybara', :group => :test
-gem 'database_cleaner', :group => :test
-gem 'launchy', :group => :test
-gem 'selenium-webdriver', :group => :test
-
-rspec_text = <<-TEXT
-\n
-    config.generators do |g|
-      g.test_framework :rspec,
-      fixtures: true,
-      view_specs: false,
-      helper_specs: false,
-      routing_specs: false,
-      controller_specs: true,
-      request_specs: false
-      g.fixture_replacement :factory_girl, dir: "spec/factories"
-    end
-TEXT
-
-after_bundler do
-  run 'bundle binstubs rspec-core'
-  generate 'rspec:install'
-  remove_dir 'test'
-
-  inject_into_file "config/application.rb", rspec_text, :after => "# config.i18n.default_locale = :de"
-end
-
-# >-----------------------[ Deflator and Autoloads ]--------------------------<
-@current_recipe = "deflator"
-
-insertion_text = <<-TEXT
-\n
-    config.middleware.use Rack::Deflater
-TEXT
-
-inject_into_file "config/application.rb", insertion_text, :after => "# config.i18n.default_locale = :de"
-
-# >--------------------------------[ Email Settings ]---------------------------------<
-@current_recipe = "email"
-
-email_configuration_text = <<-TEXT
-\n
-  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
-
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    :enable_starttls_auto => true,
-    :address              => "smtp.mandrillapp.com",
-    :port                 => 587,
-    :domain               => 'YOUR_DOMAIN',
-    :user_name            => "USERNAME",
-    :password             => "PASSWORD",
-    :authentication       => :plain
-  }
-TEXT
-
-after_bundler do
-  inject_into_file 'config/environments/development.rb', email_configuration_text, :after => "config.assets.debug = true"
-  inject_into_file 'config/environments/production.rb', email_configuration_text, :after => "config.active_support.deprecation = :notify"
-  say_wizard "------------------------ EMAIL SETTINGS --------------------------"
-  say_wizard "| Please change your settings in development.rb                  |"
-  say_wizard "| and production.rb                                              |"
-  say_wizard "------------------------------------------------------------------"
 end
 
 # >----------------------------------[ Git ]----------------------------------<
