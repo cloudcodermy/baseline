@@ -39,10 +39,14 @@ module RailsBaseline
         puts "7. ActiveAdmin"
         puts "8. CanCanCan"
         puts "9. Application views(non configurable)"
-        puts "10. SASS(non configurable)"
-        puts "11. Bootstrap"
-        puts "12. jQuery Validate(non configurable)"
-        puts "13. Git(non configurable)"
+        puts "10. Paranoia"
+        puts "11. Better Errors"
+        puts "12. Hirb"
+        puts "13. SASS(non configurable)"
+        puts "14. Bootstrap"
+        puts "15. jQuery Validate(non configurable)"
+        puts "16. jQuery dataTables(non configurable)"
+        puts "17. Git(non configurable)"
       end
     end
   end

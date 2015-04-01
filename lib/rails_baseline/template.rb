@@ -1,6 +1,6 @@
 # >----------------------------[ Initial Setup ]------------------------------<
 
-@recipes = ["database", "mongoid", "devise", "activeadmin", "git", "sass"] 
+# @recipes = ["database", "mongoid", "devise", "activeadmin", "git", "sass"] 
 @database_choice = nil
 
 def recipes; @recipes end
@@ -104,15 +104,23 @@ end
 @before_configs["rspec"].call if @before_configs["rspec"]
 say_recipe 'RSpec'
 
-gem 'rails_apps_testing', :group => :development
-gem 'rspec-rails', :group => [:development, :test]
-gem 'spring-commands-rspec', :group => :development
-gem 'factory_girl_rails', :group => [:development, :test]
-gem 'faker', :group => [:development, :test]
-gem 'capybara', :group => :test
-gem 'database_cleaner', :group => :test
-gem 'launchy', :group => :test
-gem 'selenium-webdriver', :group => :test
+gem_group :development do
+  gem 'spring-commands-rspec'
+  gem 'rails_apps_testing'
+end
+
+gem_group :development, :test do
+  gem "rspec-rails"
+  gem 'factory_girl_rails'
+  gem 'faker'
+end
+
+gem_group :test do
+  gem 'capybara'
+  gem 'database_cleaner'
+  gem 'launchy'
+  gem 'selenium-webdriver'
+end
 
 rspec_text = <<-TEXT
 \n
@@ -293,6 +301,25 @@ after_bundler do
   say_wizard "---------------------------------------------------------------------------"
 end
 
+# >--------------------------------[ Paranoia ]-----------------------------------<
+
+@current_recipe = "paranoia"
+@before_configs["paranoia"].call if @before_configs["paranoia"]
+say_recipe 'Paranoia'
+
+gem "paranoia", "~> 2.0"
+
+# >------------------------[ Better Errors and Hirb ]-----------------------------<
+
+@current_recipe = "better_errors"
+@before_configs["better_errors"].call if @before_configs["better_errors"]
+say_recipe 'Better Errors and Hirb'
+
+gem_group :development do
+  gem "better_errors"
+  gem "hirb"
+end
+
 # >-------------------------------[ Setup SASS ]----------------------------------<
 
 @current_recipe = "sass"
@@ -339,8 +366,10 @@ flash_message = <<-TEXT
 <% end %>
 TEXT
 
-if yes_wizard?("Install and configure Bootstrap?")
+use_bootstrap = @configs[@current_recipe] = yes_wizard?("Install and configure Bootstrap?")
+if use_bootstrap
   gem 'bootstrap-sass', '~> 3.3.4'
+
   after_bundler do
     append_to_file 'app/assets/stylesheets/application.css.scss', config_lines
     insert_into_file "app/assets/javascripts/application.js", :after => %r{//= require +['"]?jquery_ujs['"]?} do
@@ -363,6 +392,40 @@ after_bundler do
     "\n//= require jquery.validate\n//= require jquery.validate.additional-methods"
   end
 end
+
+# >--------------------------[ jQuery dataTables ]-----------------------------<
+
+@current_recipe = "jquery-datatables-rails"
+@before_configs["jquery-datatables-rails"].call if @before_configs["jquery-datatables-rails"]
+say_recipe 'jQuery dataTables Rails'
+
+gem 'jquery-datatables-rails', '~> 3.2.0'
+
+datatable_config_lines_bootstrap = <<-TEXT
+@import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
+TEXT
+
+datatable_config_lines_non_bootstrap = <<-TEXT
+@import "dataTables/jquery.dataTables";
+TEXT
+
+after_bundler do
+  after_bundler do
+    if @configs["bootstrap"] # if bootstrap configuration is true
+      say_wizard "Generating Bootstrap 3 dataTables"
+      append_to_file 'app/assets/stylesheets/application.css.scss', datatable_config_lines_bootstrap
+      insert_into_file "app/assets/javascripts/application.js", :after => %r{//= require +['"]?jquery_ujs['"]?} do
+        "\n//= require dataTables/jquery.dataTables\n//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap"
+      end
+    else
+      append_to_file 'app/assets/stylesheets/application.css.scss', datatable_config_lines_non_bootstrap
+      insert_into_file "app/assets/javascripts/application.js", :after => %r{//= require +['"]?jquery_ujs['"]?} do
+        "\n//= require dataTables/jquery.dataTables\n//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap"
+      end
+    end
+  end
+end
+
 
 # >----------------------------------[ Git ]----------------------------------<
 
