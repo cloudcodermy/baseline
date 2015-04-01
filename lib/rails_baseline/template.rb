@@ -219,6 +219,18 @@ else
   end
 end
 
+# >--------------------------------[ CanCanCan ]---------------------------------<
+
+@current_recipe = "cancancan"
+@before_configs["cancancan"].call if @before_configs["cancancan"]
+say_recipe 'CanCanCan'
+
+gem 'cancancan', '~> 1.10'
+
+after_bundler do
+  generate "cancan:ability"
+end
+
 # >---------------------------[ Application Views ]------------------------------<
 @current_recipe = "application"
 @before_configs["application"].call if @before_configs["application"]
@@ -282,8 +294,6 @@ after_bundler do
   remove_file 'app/assets/stylesheets/application.css'
 end
 
-@current_recipe = nil
-
 # >--------------------------------[ Bootstrap ]---------------------------------<
 
 @current_recipe = "bootstrap"
@@ -327,6 +337,20 @@ if yes_wizard?("Install and configure Bootstrap?")
       "\n//= require bootstrap-sprockets"
     end
     create_file 'app/views/shared/_messages.html.erb', flash_message
+  end
+end
+
+# >--------------------------[ jQuery Validation ]-----------------------------<
+
+@current_recipe = "jquery-validation-rails"
+@before_configs["jquery-validation-rails"].call if @before_configs["jquery-validation-rails"]
+say_recipe 'jQuery Validation Rails'
+
+gem "jquery-validation-rails"
+
+after_bundler do
+  insert_into_file "app/assets/javascripts/application.js", :after => %r{//= require +['"]?jquery_ujs['"]?} do
+    "\n//= require jquery.validate\n//= require jquery.validate.additional-methods"
   end
 end
 

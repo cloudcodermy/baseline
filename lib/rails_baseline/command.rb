@@ -29,7 +29,7 @@ module RailsBaseline
       end
         
       def list_all_recipes
-        puts "#{bold}#{yellow}All recipes in order:"
+        puts "#{yellow}All recipes in order:"
         puts "#{clear}1. Deflator(non configurable)"
         puts "2. SMTP Configurations(non configurable)"
         puts "3. Rails Config"
@@ -37,10 +37,12 @@ module RailsBaseline
         puts "5. Database(Mongoid, MySQL, Postgresql, SQLite)"
         puts "6. Devise"
         puts "7. ActiveAdmin"
-        puts "8. Application views(non configurable)"
-        puts "9. SASS(non configurable)"
-        puts "10. Bootstrap"
-        puts "11. Git(non configurable)"
+        puts "8. CanCanCan"
+        puts "9. Application views(non configurable)"
+        puts "10. SASS(non configurable)"
+        puts "11. Bootstrap"
+        puts "12. jQuery Validate(non configurable)"
+        puts "13. Git(non configurable)"
       end
     end
   end
