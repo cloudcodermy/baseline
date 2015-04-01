@@ -53,7 +53,7 @@ def before_config(&block); @before_configs[@current_recipe] = block; end
 
 @current_recipe = "database"
 @before_configs["activerecord"].call if @before_configs["activerecord"]
-say_recipe 'ActiveRecord'
+say_recipe 'Database'
 
 database_option = "activerecord"
 
@@ -92,9 +92,6 @@ end
 @before_configs["devise"].call if @before_configs["devise"]
 say_recipe 'Devise'
 
-
-@configs[@current_recipe] = config
-
 gem 'devise'
 
 after_bundler do
@@ -118,8 +115,6 @@ end
 @before_configs["activeadmin"].call if @before_configs["activeadmin"]
 say_recipe 'Active Admin'
 
-@configs[@current_recipe] = config
-
 gem 'activeadmin', github: 'activeadmin'
 
 if yes_wizard?("Skip Users?")
@@ -137,13 +132,11 @@ else
   end
 end
 
-# >---------------------------------[ SASS ]----------------------------------<
+# >-------------------------------[ Setup SASS ]----------------------------------<
 
 @current_recipe = "sass"
 @before_configs["sass"].call if @before_configs["sass"]
 say_recipe 'SASS'
-
-@configs[@current_recipe] = config
 
 after_bundler do
   copy_file 'app/assets/stylesheets/application.css', 'app/assets/stylesheets/application.css.scss'
@@ -156,8 +149,6 @@ end
 @current_recipe = "application"
 @before_configs["application"].call if @before_configs["application"]
 say_recipe 'Application Views'
-
-@configs[@current_recipe] = config
 
 application_html_file = <<-TEXT
 <!DOCTYPE html>
@@ -201,6 +192,9 @@ TEXT
 after_bundler do
   remove_file 'app/views/layouts/application.html.erb'
   create_file 'app/views/layouts/application.html.erb', application_html_file
+  say_wizard "------------------------ APPLICATION VIEWS --------------------------"
+  say_wizard "|Please change your title and meta settings in application.html.erb.|"
+  say_wizard "---------------------------------------------------------------------"
 end
 
 # >--------------------------------[ Bootstrap ]---------------------------------<
@@ -208,8 +202,6 @@ end
 @current_recipe = "bootstrap"
 @before_configs["bootstrap"].call if @before_configs["bootstrap"]
 say_recipe 'Bootstrap Front End'
-
-@configs[@current_recipe] = config
 
 config_lines = <<-TEXT
 @import "bootstrap-sprockets";
@@ -244,7 +236,9 @@ if yes_wizard?("Install and configure Bootstrap?")
   gem 'bootstrap-sass', '~> 3.3.4'
   after_bundler do
     append_to_file 'app/assets/stylesheets/application.css.scss', config_lines
-    inject_into_file "config/application.rb", "//= require bootstrap-sprockets", :after => "//= require jquery"
+    insert_into_file "app/assets/javascripts/application.js", :after => %r{//= require +['"]?jquery_ujs['"]?} do
+      "\n//= require bootstrap-sprockets"
+    end
     create_file 'app/views/shared/_messages.html.erb', flash_message
   end
 end
@@ -254,8 +248,6 @@ end
 @current_recipe = "rails_config"
 @before_configs["rails_config"].call if @before_configs["rails_config"]
 say_recipe 'Rails Config'
-
-@configs[@current_recipe] = config
 
 gem 'rails_config', '0.5.0.beta1'
 
@@ -267,8 +259,6 @@ end
 @current_recipe = "rspec"
 @before_configs["rspec"].call if @before_configs["rspec"]
 say_recipe 'RSpec'
-
-@configs[@current_recipe] = config
 
 gem 'rails_apps_testing', :group => :development
 gem 'rspec-rails', :group => [:development, :test]
@@ -303,6 +293,7 @@ after_bundler do
 end
 
 # >-----------------------[ Deflator and Autoloads ]--------------------------<
+@current_recipe = "deflator"
 
 insertion_text = <<-TEXT
 \n
@@ -312,6 +303,8 @@ TEXT
 inject_into_file "config/application.rb", insertion_text, :after => "# config.i18n.default_locale = :de"
 
 # >--------------------------------[ Email Settings ]---------------------------------<
+@current_recipe = "email"
+
 email_configuration_text = <<-TEXT
 \n
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
@@ -331,6 +324,10 @@ TEXT
 after_bundler do
   inject_into_file 'config/environments/development.rb', email_configuration_text, :after => "config.assets.debug = true"
   inject_into_file 'config/environments/production.rb', email_configuration_text, :after => "config.active_support.deprecation = :notify"
+  say_wizard "------------------------ EMAIL SETTINGS --------------------------"
+  say_wizard "| Please change your settings in development.rb                  |"
+  say_wizard "| and production.rb                                              |"
+  say_wizard "------------------------------------------------------------------"
 end
 
 # >----------------------------------[ Git ]----------------------------------<
@@ -339,8 +336,6 @@ end
 @before_configs["git"].call if @before_configs["git"]
 say_recipe 'Git'
 
-@configs[@current_recipe] = config
-
 after_everything do
   git :init
   git :add => '.'
@@ -348,6 +343,7 @@ after_everything do
 end
 
 # >-----------------------------[ Run Bundler ]-------------------------------<
+@current_recipe = "bundler"
 
 say_wizard "Running Bundler install. This will take a while."
 run 'bundle install'
@@ -357,3 +353,6 @@ say_wizard "Running after Bundler callbacks."
 @current_recipe = nil
 say_wizard "Running after everything callbacks."
 @after_everything_blocks.each{|b| config = @configs[b[0]] || {}; @current_recipe = b[0]; b[1].call}
+
+@current_recipe = nil
+say_wizard "==================================FINISH PROCESS================================="

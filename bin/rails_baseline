@@ -6,7 +6,4 @@ $LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
 require 'rails_baseline'
 require 'rails_baseline/command'
 
-puts "Initializing Rails Baseline app..."
-puts "Arguments: #{ARGV}"
-
 RailsBaseline::Command.start ARGV

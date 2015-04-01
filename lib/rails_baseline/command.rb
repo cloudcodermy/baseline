@@ -19,10 +19,9 @@ module RailsBaseline
 
       def run_template(name)
         puts "#{bold}Generating and Running Template..."
-        puts
         template_path = File.join( File.dirname(__FILE__), 'template.rb' )
   			file = File.open( template_path )
-        system "rails new #{name} -m #{file.path}"
+        system "rails new #{name} -m #{file.path} --skip-bundle"
       end
     end
   end
