@@ -268,6 +268,16 @@ application_html_file = <<-TEXT
   <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
+  <!-- Google Tag Manager -->
+  <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-XXXXXX"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-XXXXXX');</script>
+  <!-- End Google Tag Manager -->
+
   <%= yield %>
   
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
@@ -278,9 +288,9 @@ TEXT
 after_bundler do
   remove_file 'app/views/layouts/application.html.erb'
   create_file 'app/views/layouts/application.html.erb', application_html_file
-  say_wizard "------------------------ APPLICATION VIEWS --------------------------"
-  say_wizard "|Please change your title and meta settings in application.html.erb.|"
-  say_wizard "---------------------------------------------------------------------"
+  say_wizard "--------------------------- APPLICATION VIEWS -----------------------------"
+  say_wizard "|Please change your GTM, title and meta settings in application.html.erb. |"
+  say_wizard "---------------------------------------------------------------------------"
 end
 
 # >-------------------------------[ Setup SASS ]----------------------------------<
