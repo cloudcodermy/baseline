@@ -39,6 +39,11 @@ After the wizard, please configure these files according to your title, details 
 3. Devise initializer, modules and migration(refer to [https://github.com/plataformatec/devise](https://github.com/plataformatec/devise) for more information)
 4. ActiveAdmin initializer and migration(refer to [https://github.com/activeadmin/activeadmin](https://github.com/activeadmin/activeadmin) for more information)
 
+and run migration for the pending migration files:
+
+	$ rake db:create
+	$ rake db:migrate
+
 ## Changelog
 
 1. 0.0.5 - Executable file

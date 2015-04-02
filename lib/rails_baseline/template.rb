@@ -516,6 +516,17 @@ after_bundler do
   generate "kaminari:views bootstrap3" if @configs["bootstrap"]
 end
 
+# >----------------------------[ Home Controller ]-----------------------------<
+
+@current_recipe = "views"
+@before_configs["views"].call if @before_configs["views"]
+say_recipe 'Home Controller'
+
+after_bundler do
+  generate "controller home index"
+  inject_into_file "config/routes.rb", "\n  root 'home#index'", :after => "devise_for :users"
+end
+
 # >----------------------------------[ Git ]----------------------------------<
 
 @current_recipe = "git"
