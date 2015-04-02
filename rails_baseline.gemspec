@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Yoon Wai Yan"]
   spec.email         = ["waiyan@cloudcoder.com.my"]
   spec.summary       = %q{Rails 4.2 template}
-  spec.description   = %q{Rails 4.2 template based on the practices by Cloud Coder team.}
-  spec.homepage      = "http://cloudcoder.com.my"
+  spec.description   = %q{Create baseline rails app with ease. Based on the normal practices by Cloud Coder team.}
+  spec.homepage      = "https://github.com/cloudcodermy/baseline"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
