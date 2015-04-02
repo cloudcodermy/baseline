@@ -1,0 +1,23 @@
+Rails Deflator
+SMTP Configurations
+Rails Config
+Quiet Assets
+RSpec test suite
+Database(Mongoid, MySQL, Postgresql, SQLite)
+Devise
+ActiveAdmin
+CanCanCan
+Decent Exposure
+Paperclip
+State Machines
+Delayed Job
+Application views
+Paranoia
+Better Errors
+Hirb
+SASS
+Bootstrap
+jQuery Validate
+jQuery dataTables
+Kaminari
+Git

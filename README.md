@@ -2,7 +2,7 @@
 
 This gem is a wrapper of a Rails Applications Template to create a new Rails 4.2 application based on the normal practices in [cloudcoder.com.my](http://cloudcoder.com.my). Just go through a simple wizard to get all the gems set and you'll be good to proceed with migrations and start coding your project.
 
-This gem is heavily based on [rails_wizard](https://github.com/intridea/rails_wizard) and refers to [rails-composer](https://github.com/RailsApps/rails-composer).
+This gem is heavily based on [rails_wizard](https://github.com/intridea/rails_wizard) for the overall idea of the gem and refers to [rails-composer](https://github.com/RailsApps/rails-composer) for the code organization.
 
 ## Installation(Development Mode)
 

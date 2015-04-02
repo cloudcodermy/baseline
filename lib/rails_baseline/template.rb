@@ -99,6 +99,14 @@ after_bundler do
   generate 'rails_config:install'
 end
 
+# >--------------------------------[ Quiet Assets ]---------------------------------<
+
+@current_recipe = "quiet_assets"
+@before_configs["quiet_assets"].call if @before_configs["quiet_assets"]
+say_recipe 'Quiet Assets'
+
+gem 'quiet_assets', group: :development
+
 # >--------------------------------[ RSpec ]---------------------------------<
 @current_recipe = "rspec"
 @before_configs["rspec"].call if @before_configs["rspec"]
@@ -206,24 +214,27 @@ end
 
 # >--------------------------------[ Active Admin ]---------------------------------<
 
-@current_recipe = "activeadmin"
-@before_configs["activeadmin"].call if @before_configs["activeadmin"]
-say_recipe 'Active Admin'
+# Disable activeadmin for mongoid at the moment
+if config['database'] != "mongoid"
+  @current_recipe = "activeadmin"
+  @before_configs["activeadmin"].call if @before_configs["activeadmin"]
+  say_recipe 'Active Admin'
 
-gem 'activeadmin', github: 'activeadmin'
+  gem 'activeadmin', github: 'activeadmin'
 
-if yes_wizard?("Active Admin with Users?(no to skip users)")
-  model_name = ask_wizard("Enter the model name of ActiveAdmin. Leave it blank to default as AdminUser.")
-  after_bundler do
-    if model_name.present?
-      generate "active_admin:install #{model_name}"
-    else
-      generate "active_admin:install"
+  if yes_wizard?("Active Admin with Users?(no to skip users)")
+    model_name = ask_wizard("Enter the model name of ActiveAdmin. Leave it blank to default as AdminUser.")
+    after_bundler do
+      if model_name.present?
+        generate "active_admin:install #{model_name}"
+      else
+        generate "active_admin:install"
+      end
     end
-  end
-else
-  after_bundler do
-    generate "active_admin:install --skip-users"
+  else
+    after_bundler do
+      generate "active_admin:install --skip-users"
+    end
   end
 end
 
@@ -239,6 +250,73 @@ after_bundler do
   generate "cancan:ability"
 end
 
+# >-----------------------------[ Decent Exposure ]------------------------------<
+
+@current_recipe = "decent_exposure"
+@before_configs["decent_exposure"].call if @before_configs["decent_exposure"]
+say_recipe 'Decent Exposure'
+
+gem 'decent_exposure', '~> 2.3.2'
+
+decent_exposure_strong_parameters = <<-TEXT
+  \n
+  decent_configuration do
+    strategy DecentExposure::StrongParametersStrategy
+  end
+TEXT
+
+after_bundler do
+  inject_into_file "app/controllers/application_controller.rb", decent_exposure_strong_parameters, :after => "protect_from_forgery with: :exception"
+end
+
+# >--------------------------------[ Paperclip ]---------------------------------<
+
+@current_recipe = "paperclip"
+@before_configs["paperclip"].call if @before_configs["paperclip"]
+say_recipe 'Paperclip'
+
+if config['database'] == "mongoid"
+  gem "mongoid-paperclip", :require => "mongoid_paperclip"
+  gem 'aws-sdk', '~> 1.3.4'
+else
+  gem "paperclip", "~> 4.2"
+end
+
+# >--------------------------------[ State Machines ]---------------------------------<
+
+@current_recipe = "state_machines"
+@before_configs["state_machines"].call if @before_configs["state_machines"]
+say_recipe 'State Machines'
+
+if config['database'] == "mongoid"
+  gem 'state_machines-mongoid'
+else
+  gem 'state_machines-activerecord'
+end
+
+# >--------------------------------[ Delayed Job ]---------------------------------<
+
+@current_recipe = "delayed_job"
+@before_configs["delayed_job"].call if @before_configs["delayed_job"]
+say_recipe 'Delayed Job'
+
+if config['database'] == "mongoid"
+  gem 'delayed_job_mongoid'
+else
+  gem 'delayed_job_active_record'
+  after_bundler do
+    generate "delayed_job:active_record"
+  end
+end
+
+delayed_job_config = <<-TEXT
+  \n
+    config.active_job.queue_adapter = :delayed_job
+TEXT
+
+after_bundler do
+  inject_into_file "config/application.rb", delayed_job_config, :after => "# config.i18n.default_locale = :de"
+end
 # >---------------------------[ Application Views ]------------------------------<
 @current_recipe = "application"
 @before_configs["application"].call if @before_configs["application"]
@@ -426,6 +504,17 @@ after_bundler do
   end
 end
 
+# >-----------------------------[ Kaminari ]------------------------------<
+
+@current_recipe = "kaminari"
+@before_configs["kaminari"].call if @before_configs["kaminari"]
+say_recipe 'Kaminari'
+
+gem 'kaminari'
+
+after_bundler do
+  generate "kaminari:views bootstrap3" if @configs["bootstrap"]
+end
 
 # >----------------------------------[ Git ]----------------------------------<
 

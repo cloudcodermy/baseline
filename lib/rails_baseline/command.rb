@@ -29,24 +29,11 @@ module RailsBaseline
       end
         
       def list_all_recipes
-        puts "#{yellow}All recipes in order:"
-        puts "#{clear}1. Deflator(non configurable)"
-        puts "2. SMTP Configurations(non configurable)"
-        puts "3. Rails Config"
-        puts "4. RSpec test suite(non configurable)"
-        puts "5. Database(Mongoid, MySQL, Postgresql, SQLite)"
-        puts "6. Devise"
-        puts "7. ActiveAdmin"
-        puts "8. CanCanCan"
-        puts "9. Application views(non configurable)"
-        puts "10. Paranoia"
-        puts "11. Better Errors"
-        puts "12. Hirb"
-        puts "13. SASS(non configurable)"
-        puts "14. Bootstrap"
-        puts "15. jQuery Validate(non configurable)"
-        puts "16. jQuery dataTables(non configurable)"
-        puts "17. Git(non configurable)"
+        puts "#{yellow}All recipes in order:#{clear}"
+        recipes_list_path = File.join( File.dirname(__FILE__), 'recipes.txt' )
+        File.open(recipes_list_path, "r").each_line.with_index do |line, index|
+          puts "#{index+1}. #{line}"
+        end
       end
     end
   end
