@@ -28,6 +28,7 @@ List out all available recipes:
 2. 0.1.0 - Rearrange wizard orders and order listing
 3. 0.1.1 - Added jQuery Validation, CanCanCan and Google Tag Manager
 3. 0.1.2 - Added Paranoia, Better Errors, Hirb and jQuery DataTables
+4. 0.1.3 - Added Quiet Assets, Decent Exposure, Paperclip, State Machines, Delayed Job and Kaminari
 
 ## Contributing
 
