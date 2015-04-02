@@ -51,6 +51,7 @@ and run migration for the pending migration files:
 3. 0.1.1 - Added jQuery Validation, CanCanCan and Google Tag Manager
 3. 0.1.2 - Added Paranoia, Better Errors, Hirb and jQuery DataTables
 4. 0.1.3 - Added Quiet Assets, Decent Exposure, Paperclip, State Machines, Delayed Job and Kaminari
+5. 0.1.7 - Various fixes, and generate a static home page
 
 ## Contributing
 
