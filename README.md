@@ -3,6 +3,7 @@
 This gem is still under active development.
 
 # Rails 4 Baseline
+[![Gem Version](https://badge.fury.io/rb/rails_baseline.svg)](http://badge.fury.io/rb/rails_baseline)
 
 This gem is a wrapper of a Rails Applications Template to create a new Rails 4.2 application based on the normal practices in [cloudcoder.com.my](http://cloudcoder.com.my). Just go through a simple wizard to get all the gems set and you'll be good to proceed with migrations and start coding your project.
 
@@ -13,6 +14,8 @@ This gem is heavily based on [rails_wizard](https://github.com/intridea/rails_wi
 This gem is tested on Rails 4.2 and meant to build new Rails 4.2 app, it is unknown whether the gem is working fine in Rails 4.0.x and 4.1.x or not. The only difference at the moment is a configuration of ActiveJob for adding `Delayed Job` as the background worker.
 
 ## Installation
+
+Please don't include this gem into Gemfile.
 
     $ gem install rails_baseline
 
