@@ -385,7 +385,11 @@ end
 @before_configs["paranoia"].call if @before_configs["paranoia"]
 say_recipe 'Paranoia'
 
-gem "paranoia", "~> 2.0"
+if config['database'] != "mongoid"
+  gem "paranoia", "~> 2.0"
+else
+  gem 'mongoid_paranoia', '~> 0.1.2'
+end
 
 # >------------------------[ Better Errors and Hirb ]-----------------------------<
 
@@ -617,7 +621,7 @@ end
 @before_configs["deployment"].call if @before_configs["deployment"]
 say_recipe 'Deployment'
 
-config['deployment'] = multiple_choice("Which deployment method are you using?", [["Heroku", "heroku"], ["Capistrano", "capistrano"], ["Engine Yard", "engineyard"]])
+config['deployment'] = multiple_choice("Which deployment method are you using?", [["Heroku", "heroku"], ["Capistrano", "capistrano"], ["Engine Yard", "engineyard"], ["No Recipe", "none"]])
 
 unicorn_config =<<-TEXT
 # config/unicorn.rb
