@@ -48,3 +48,15 @@ def multiple_choice(question, choices)
   answer = ask_wizard("Enter your selection:") while !values.keys.include?(answer)
   values[answer]
 end
+
+def after_bundler(&block)
+  @after_blocks << [@current_recipe, block]
+end
+
+def after_everything(&block)
+  @after_everything_blocks << [@current_recipe, block]
+end
+
+def before_config(&block)
+  @before_configs[@current_recipe] = block
+end

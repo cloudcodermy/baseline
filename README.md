@@ -52,6 +52,7 @@ and run migration for the pending migration files:
 4. 0.1.3 - Added Quiet Assets, Decent Exposure, Paperclip, State Machines, Delayed Job and Kaminari
 5. 0.1.7 - Various fixes, and generate a static home page
 6. 0.2.9 - Modularize code base, removed several gems
+7. 0.3.10 - Refactor code, removed unused files, added optional version
 
 ## Contributing
 

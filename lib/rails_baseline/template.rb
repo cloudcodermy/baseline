@@ -32,20 +32,12 @@ recipes = [
  	'bundler'
 ]
 
-# >----------------------------[ Initial Setup ]------------------------------<
-
-# @recipes = ["database", "mongoid", "devise", "activeadmin", "git", "sass"] 
 @database_choice = nil
-
 @current_recipe = nil
 @configs = {}
-
 @after_blocks = []
-def after_bundler(&block); @after_blocks << [@current_recipe, block]; end
 @after_everything_blocks = []
-def after_everything(&block); @after_everything_blocks << [@current_recipe, block]; end
 @before_configs = {}
-def before_config(&block); @before_configs[@current_recipe] = block; end
 
 for recipe in recipes
 	@current_recipe = recipe
