@@ -27,6 +27,10 @@ The list is available to view through lib/recipes.txt as well.
 
     $ rails_baseline new APP_NAME
 
+If you want to specify a Rails version for your new Rails project:
+    
+    $ rails_baseline new APP_NAME --version RAILS_VERSION
+
 Please replace APP_NAME with your new Rails app name.
 
 #### Post-Wizard Configuration
@@ -40,8 +44,8 @@ After the wizard, please configure these files according to your title, details 
 
 and run migration for the pending migration files:
 
-	$ rake db:create
-	$ rake db:migrate
+  $ rake db:create
+  $ rake db:migrate
 
 ## Changelog
 
