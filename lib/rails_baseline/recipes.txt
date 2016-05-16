@@ -7,7 +7,6 @@ Database(Mongoid, MySQL, Postgresql, SQLite)
 Devise
 ActiveAdmin
 CanCanCan
-Decent Exposure
 Paperclip
 State Machines
 Delayed Job
@@ -18,7 +17,6 @@ Hirb
 SASS
 Bootstrap
 Font Awesome
-Liquid
 jQuery Validate
 jQuery dataTables
 Kaminari
