@@ -1,7 +1,3 @@
-## !!Under Active Development
-
-This gem is still under active development.
-
 # Rails 4 Baseline
 [![Gem Version](https://badge.fury.io/rb/rails_baseline.svg)](http://badge.fury.io/rb/rails_baseline)
 
@@ -55,14 +51,16 @@ and run migration for the pending migration files:
 3. 0.1.2 - Added Paranoia, Better Errors, Hirb and jQuery DataTables
 4. 0.1.3 - Added Quiet Assets, Decent Exposure, Paperclip, State Machines, Delayed Job and Kaminari
 5. 0.1.7 - Various fixes, and generate a static home page
+6. 0.2.9 - Modularize code base, removed several gems
 
 ## Contributing
 
 1. Fork it ( https://github.com/cloudcodermy/baseline/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+3. Test codebase by `running bin/rails_baseline new <project_name>` to make sure it runs properly
+4. Commit your changes (`git commit -am 'Add some feature'`) without committing test rails apps
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create a new Pull Request
 
 ## License
 

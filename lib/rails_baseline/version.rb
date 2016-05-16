@@ -1,3 +1,3 @@
 module RailsBaseline
-  VERSION = "0.1.9"
+  VERSION = "0.2.9"
 end
